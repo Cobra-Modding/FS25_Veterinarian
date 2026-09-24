@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <modDesc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" descVersion="111" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/modDesc.xsd">
   <author>Marcus / Codex</author>
-  <version>1.0.2.1</version>
+  <version>1.0.3.5</version>
   <title>
     <de>Tierarzt &amp; Tierkrankheiten</de>
     <en>Veterinarian &amp; Animal Diseases</en>
@@ -384,5 +384,21 @@ Animal %d of %d</en>
       <de>%s behandeln lassen? Kosten: %s</de>
       <en>Treat %s? Cost: %s</en>
     </text>
-  </l10n>
+      <text name="vet_centerStatusLabel">
+      <de>Status:</de>
+      <en>Status:</en>
+    </text>
+    <text name="vet_centerStatusHealthy">
+      <de>Keine kranken Tiere</de>
+      <en>No sick animals</en>
+    </text>
+    <text name="vet_centerStatusSick">
+      <de>%d Tier(e) erkrankt an %s</de>
+      <en>%d animal(s) ill with %s</en>
+    </text>
+    <text name="vet_centerMilkLabel">
+      <de>Milchgebende Tiere:</de>
+      <en>Milk-producing animals:</en>
+    </text>
+</l10n>
 </modDesc>

@@ -18,14 +18,32 @@ end
 function VeterinarianActionsDialog:onCreate()
     VeterinarianAnimalList.setTextures(self)
     self.actionButtons = {
-        {element=self.inseminationButton, texture="actionWide"},
-        {element=self.vaccineButton, texture="actionWide"},
-        {element=self.renameButton, texture="actionWide"}
+        {element=self.inseminationButton, texture="actionWide", chevron=true},
+        {element=self.vaccineButton, texture="actionWide", chevron=true},
+        {element=self.renameButton, texture="actionWide", chevron=true}
     }
+    self.footerButtons = {}
+    if self.backButton ~= nil then
+        table.insert(self.footerButtons, {
+            element = self.backButton,
+            hoverBg = self.backButton:getDescendantByName("backHoverBg"),
+            bg = self.backButton:getDescendantByName("backKeyBg"),
+            key = self.backButton:getDescendantByName("backKeyText"),
+            label = self.backButton:getDescendantByName("backLabelText")
+        })
+    end
     for _, entry in ipairs(self.actionButtons) do
         VeterinarianAnimalList.setFullImage(entry.element:getDescendantByName("actionChevron"),
             self.MOD_DIRECTORY .. "gui/textures/actionChevron.dds")
     end
+    for _, entry in ipairs(self.footerButtons) do
+        -- Keep the legacy child hidden. The Back button itself now uses the
+        -- same proven normal/active DDS-state approach as the action buttons.
+        if entry.hoverBg ~= nil then entry.hoverBg:setVisible(false) end
+        entry.currentTexture = nil
+    end
+    self.mouseHoveredAction = nil
+    self.mouseHoveredFooter = nil
 end
 
 function VeterinarianActionsDialog:findEntry(entries)
@@ -134,41 +152,115 @@ function VeterinarianActionsDialog:onServiceAction(action)
     elseif action == InputAction.MENU_BACK then self:onClickBack() end
 end
 
+local function veterinarianMouseOver(element, posX, posY)
+    if element == nil or not element:getIsVisible() or element.absPosition == nil or element.absSize == nil then
+        return false
+    end
+    return GuiUtils.checkOverlayOverlap(posX, posY,
+        element.absPosition[1], element.absPosition[2], element.absSize[1], element.absSize[2])
+end
+
+function VeterinarianActionsDialog:mouseEvent(posX, posY, isDown, isUp, button, eventUsed)
+    self.mouseHoveredFooter = nil
+    self.mouseHoveredAction = nil
+
+    for _, entry in ipairs(self.footerButtons or {}) do
+        if veterinarianMouseOver(entry.element, posX, posY) then
+            self.mouseHoveredFooter = entry.element
+            break
+        end
+    end
+
+    if self.mouseHoveredFooter == nil then
+        for _, entry in ipairs(self.actionButtons or {}) do
+            if entry.element ~= nil and not entry.element:getIsDisabled() and veterinarianMouseOver(entry.element, posX, posY) then
+                self.mouseHoveredAction = entry.element
+                break
+            end
+        end
+    end
+
+    return VeterinarianActionsDialog:superClass().mouseEvent(self, posX, posY, isDown, isUp, button, eventUsed)
+end
+
 function VeterinarianActionsDialog:update(dt)
     VeterinarianActionsDialog:superClass().update(self, dt)
     if self.isOpen then self:updateActionButtons() end
 end
 
 function VeterinarianActionsDialog:updateActionButtons()
-    -- Mouse hover takes precedence over a previously keyboard-focused button.
-    local hovered = nil
-    for _, entry in ipairs(self.actionButtons or {}) do
-        local button = entry.element
-        if button:getIsVisible() and not button:getIsDisabled() and button:getIsHighlighted() then
-            hovered = button
-            break
-        end
-    end
+    -- Prefer the real mouse hit-test captured in mouseEvent. Keyboard focus is
+    -- only used when the mouse is not currently over one of our controls.
+    local hoveredFooter = self.mouseHoveredFooter
+    local hoveredAction = self.mouseHoveredAction
+
     for _, entry in ipairs(self.actionButtons or {}) do
         local button = entry.element
         local disabled = button:getIsDisabled()
-        local active = not disabled and (button == hovered or (hovered == nil and button:getIsFocused()))
+        -- Mouse hover must be deterministic. Do not mix keyboard/gamepad focus
+        -- into the mouse highlight state; that caused the green selection to
+        -- jump back to the previously focused action while moving the mouse.
+        local active = not disabled and hoveredFooter == nil and button == hoveredAction
         local suffix = disabled and "Disabled" or (active and (button:getIsPressed() and "Pressed" or "Active") or "")
         local texture = entry.texture .. suffix
         if entry.currentTexture ~= texture then
             VeterinarianAnimalList.setFullImage(button, VeterinarianActionsDialog.MOD_DIRECTORY .. "gui/textures/" .. texture .. ".dds")
             entry.currentTexture = texture
-            local label = button:getDescendantByName("label")
-            local color = disabled and {0.45, 0.47, 0.43, 1}
-                or (active and {0.015, 0.020, 0.005, 1} or {0.94, 0.94, 0.93, 1})
+        end
+
+        local label = button:getDescendantByName("label")
+        local color = disabled and {0.45, 0.47, 0.43, 1}
+            or (active and {0.015, 0.020, 0.005, 1} or {0.94, 0.94, 0.93, 1})
+        if label ~= nil then
             for _, method in ipairs({"setTextColor", "setTextFocusedColor", "setTextSelectedColor", "setTextHighlightedColor", "setTextDisabledColor"}) do
                 if label[method] ~= nil then label[method](label, unpack(color)) end
             end
         end
-        button:getDescendantByName("actionChevron"):setVisible(active)
+
+        local chevron = button:getDescendantByName("actionChevron")
+        if chevron ~= nil then chevron:setVisible(active) end
+    end
+
+    for _, entry in ipairs(self.footerButtons or {}) do
+        local active = entry.element ~= nil and entry.element == hoveredFooter
+
+        if entry.hoverBg ~= nil then entry.hoverBg:setVisible(false) end
+
+        -- Use the same prebuilt DDS states as the main action rows.  This avoids
+        -- all profile/focus tint interactions that produced the white rectangle.
+        local texture = active
+            and (entry.element:getIsPressed() and "actionNarrowPressed" or "actionNarrowActive")
+            or "actionNarrow"
+        if entry.currentTexture ~= texture then
+            VeterinarianAnimalList.setFullImage(entry.element,
+                VeterinarianActionsDialog.MOD_DIRECTORY .. "gui/textures/" .. texture .. ".dds")
+            entry.currentTexture = texture
+        end
+
+        local keyBgColor = {0.055, 0.070, 0.030, 1}
+        local keyColor = {0.67, 0.86, 0.12, 1}
+        local labelColor = active and {0.055, 0.070, 0.030, 1} or {0.94, 0.94, 0.93, 1}
+
+        if entry.bg ~= nil then
+            VeterinarianAnimalList.setFullImage(entry.bg, VeterinarianActionsDialog.MOD_DIRECTORY .. "gui/textures/actionKey.dds")
+            entry.bg:setImageColor(nil, unpack(keyBgColor))
+            if entry.bg.overlay ~= nil then
+                for _, suffix in ipairs({"", "Disabled", "Focused", "Selected", "Highlighted", "Pressed"}) do
+                    entry.bg.overlay["color" .. suffix] = {unpack(keyBgColor)}
+                end
+            end
+        end
+
+        for _, textElement in ipairs({entry.key, entry.label}) do
+            local color = textElement == entry.key and keyColor or labelColor
+            if textElement ~= nil then
+                for _, method in ipairs({"setTextColor", "setTextFocusedColor", "setTextSelectedColor", "setTextHighlightedColor", "setTextDisabledColor"}) do
+                    if textElement[method] ~= nil then textElement[method](textElement, unpack(color)) end
+                end
+            end
+        end
     end
 end
-
 
 function VeterinarianActionsDialog:onTreatmentConfirmed(confirmed)
     if confirmed then VeterinarianEvent.sendEvent(self.husbandry, self.animalIndex) end

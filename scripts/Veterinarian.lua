@@ -16,6 +16,12 @@ local DISEASES = {
     "Parasitenbefall"
 }
 
+-- Forward declarations for helpers used by update/draw hooks before their definitions.
+local findDisplayedOverviewHusbandry
+local findAgeLabel
+local findCenterTitle
+
+
 function Veterinarian.new()
     local self = setmetatable({}, Veterinarian_mt)
     self.states = {}
@@ -23,6 +29,7 @@ function Veterinarian.new()
     self.testDiseasePending = Veterinarian.TEST_FORCE_DISEASE_ON_LOAD
     self.animalScreenHookInstalled = false
     self.animalsFrameHookInstalled = false
+    self.animalsFrameDrawHookInstalled = false
     self.overviewAnchorWarningShown = false
     self.nameReconcileTimer = 0
     return self
@@ -146,6 +153,7 @@ function Veterinarian:loadMap()
     end
     self:installAnimalScreenHook()
     self:installAnimalsFrameHook()
+    self:installAnimalsFrameDrawHook()
     if g_client ~= nil and VeterinarianCardTemplates ~= nil then
         VeterinarianCardTemplates.register()
     end
@@ -170,6 +178,15 @@ function Veterinarian:update(dt)
 
     if not self.animalsFrameHookInstalled then
         self:installAnimalsFrameHook()
+    end
+    if not self.animalsFrameDrawHookInstalled then
+        self:installAnimalsFrameDrawHook()
+    end
+
+    if g_inGameMenu ~= nil and g_inGameMenu.pageAnimals ~= nil then
+        local frame = g_inGameMenu.pageAnimals
+        local husbandry = findDisplayedOverviewHusbandry(frame)
+        if husbandry ~= nil then frame.veterinarianCurrentHusbandry = husbandry end
     end
 
     if g_server == nil or g_currentMission == nil then return end
@@ -335,19 +352,154 @@ function Veterinarian:syncAllStates(showNotification, connection)
 end
 
 
+local function findVeterinarianHusbandryFromValue(value)
+    if type(value) ~= "table" then return nil end
+
+    local candidate = resolvePlaceable(value)
+    if candidate ~= nil and candidate.getNumOfAnimals ~= nil and candidate.spec_husbandryAnimals ~= nil then
+        return candidate
+    end
+
+    for _, key in ipairs({"husbandry", "animalHusbandry", "placeable", "owningPlaceable"}) do
+        local nested = value[key]
+        if type(nested) == "table" then
+            candidate = resolvePlaceable(nested)
+            if candidate ~= nil and candidate.getNumOfAnimals ~= nil and candidate.spec_husbandryAnimals ~= nil then
+                return candidate
+            end
+        end
+    end
+
+    return nil
+end
+
+local function findVeterinarianHusbandry(...)
+    for index = 1, select("#", ...) do
+        local husbandry = findVeterinarianHusbandryFromValue(select(index, ...))
+        if husbandry ~= nil then return husbandry end
+    end
+    return nil
+end
+
 function Veterinarian:installAnimalsFrameHook()
-    if self.animalsFrameHookInstalled or InGameMenuAnimalsFrame == nil or InGameMenuAnimalsFrame.updateConditionDisplay == nil then
+    if self.animalsFrameHookInstalled or InGameMenuAnimalsFrame == nil then
         return
     end
 
-    InGameMenuAnimalsFrame.updateConditionDisplay = Utils.appendedFunction(
-        InGameMenuAnimalsFrame.updateConditionDisplay,
-        function(frame, husbandry)
-            if g_veterinarian ~= nil then
-                g_veterinarian:updateAnimalsOverviewStatus(frame, resolvePlaceable(husbandry))
-            end
-        end)
-    self.animalsFrameHookInstalled = true
+    -- FS25 1.23 builds the middle detail pane through displayLivestock().
+    -- Hook that exact path instead of the older updateConditionDisplay() path.
+    -- This runs after the base game has populated HOLSTEIN / ANGUS / etc., so
+    -- the currently displayed husbandry is known and the centre overlay can be
+    -- drawn reliably without touching any base-game GUI containers.
+    if InGameMenuAnimalsFrame.displayLivestock ~= nil then
+        InGameMenuAnimalsFrame.displayLivestock = Utils.appendedFunction(
+            InGameMenuAnimalsFrame.displayLivestock,
+            function(frame, ...)
+                if g_veterinarian == nil then return end
+
+                local husbandry = findVeterinarianHusbandry(...)
+                if husbandry == nil then
+                    husbandry = findVeterinarianHusbandry(
+                        frame.currentHusbandry, frame.selectedHusbandry,
+                        frame.husbandry, frame.currentItem, frame.selectedItem)
+                end
+
+                if husbandry ~= nil then
+                    frame.veterinarianCurrentHusbandry = husbandry
+                    g_veterinarian:updateAnimalsOverviewCenterInfo(frame, husbandry)
+                end
+            end)
+        self.animalsFrameHookInstalled = true
+        return
+    end
+
+    -- Compatibility fallback for older game scripts.
+    if InGameMenuAnimalsFrame.updateConditionDisplay ~= nil then
+        InGameMenuAnimalsFrame.updateConditionDisplay = Utils.appendedFunction(
+            InGameMenuAnimalsFrame.updateConditionDisplay,
+            function(frame, husbandry)
+                if g_veterinarian ~= nil then
+                    husbandry = resolvePlaceable(husbandry)
+                    frame.veterinarianCurrentHusbandry = husbandry
+                    g_veterinarian:updateAnimalsOverviewCenterInfo(frame, husbandry)
+                end
+            end)
+        self.animalsFrameHookInstalled = true
+    end
+end
+
+function Veterinarian:drawAnimalsOverviewCenterInfo(frame)
+    if frame == nil then return end
+
+    local husbandry = resolvePlaceable(frame.veterinarianCurrentHusbandry)
+    if husbandry == nil then
+        husbandry = findDisplayedOverviewHusbandry(frame)
+        if husbandry ~= nil then
+            frame.veterinarianCurrentHusbandry = husbandry
+        end
+    end
+    if husbandry == nil then return end
+
+    -- Anchor to the controls that are visibly rendered by the base game.
+    -- This avoids cloned elements being clipped and avoids hard-coded 4K/1080p
+    -- coordinates. The two lines live between the breed title and ALTER.
+    local ageLabel = frame.veterinarianOverviewAgeLabel or findAgeLabel(frame)
+    local title = frame.veterinarianOverviewCenterTitle or findCenterTitle(frame)
+    if ageLabel == nil or title == nil or ageLabel.absPosition == nil then return end
+    frame.veterinarianOverviewAgeLabel = ageLabel
+    frame.veterinarianOverviewCenterTitle = title
+
+    local statusText, statusColor = self:getOverviewStatusLine(husbandry)
+    local milkCount = self:getMilkProducingCount(husbandry)
+    local white = {0.94, 0.94, 0.93, 1}
+    local green = {0.67, 0.86, 0.12, 1}
+    local textSize = 0.013
+
+    local ageX = ageLabel.absPosition[1] or 0.33
+    local ageY = ageLabel.absPosition[2] or 0.44
+    local titlePos = title.absPosition or title.position or {ageX, ageY + 0.08}
+    local titleSize = title.absSize or title.size or {0.20, 0.04}
+    local titleCenterX = (titlePos[1] or ageX) + (titleSize[1] or 0.20) * 0.5
+
+    local statusLabel = g_i18n:getText("vet_centerStatusLabel")
+    local milkLabel = g_i18n:getText("vet_centerMilkLabel")
+    local statusFullWidth = getTextWidth(textSize, statusLabel) + 0.004 + getTextWidth(textSize, statusText)
+    local milkValue = tostring(milkCount)
+    local milkFullWidth = getTextWidth(textSize, milkLabel) + 0.004 + getTextWidth(textSize, milkValue)
+    local xStatus = titleCenterX - statusFullWidth * 0.5
+    local xMilk = titleCenterX - milkFullWidth * 0.5
+    local yStatus = ageY + 0.055
+    local yMilk = ageY + 0.032
+
+    setTextBold(false)
+    setTextAlignment(RenderText.ALIGN_LEFT)
+    setTextColor(unpack(white))
+    renderText(xStatus, yStatus, textSize, statusLabel)
+    local sw = getTextWidth(textSize, statusLabel)
+    setTextColor(unpack(statusColor))
+    renderText(xStatus + sw + 0.004, yStatus, textSize, statusText)
+
+    setTextColor(unpack(white))
+    renderText(xMilk, yMilk, textSize, milkLabel)
+    local mw = getTextWidth(textSize, milkLabel)
+    setTextColor(unpack(green))
+    renderText(xMilk + mw + 0.004, yMilk, textSize, milkValue)
+
+    setTextColor(1, 1, 1, 1)
+    setTextAlignment(RenderText.ALIGN_LEFT)
+end
+
+function Veterinarian:installAnimalsFrameDrawHook()
+    if self.animalsFrameDrawHookInstalled or InGameMenuAnimalsFrame == nil or InGameMenuAnimalsFrame.draw == nil then
+        return
+    end
+
+    InGameMenuAnimalsFrame.draw = Utils.appendedFunction(InGameMenuAnimalsFrame.draw, function(frame)
+        if g_veterinarian ~= nil then
+            g_veterinarian:drawAnimalsOverviewCenterInfo(frame)
+        end
+    end)
+    self.animalsFrameDrawHookInstalled = true
 end
 
 local function findOverviewHeading(element)
@@ -366,6 +518,158 @@ local function findOverviewHeading(element)
         end
     end
     return nil
+end
+
+
+local function collectTextElements(element, output)
+    if element == nil then return end
+    output = output or {}
+    if type(element.text) == "string" and element.text ~= "" then
+        table.insert(output, element)
+    end
+    if element.elements ~= nil then
+        for _, child in ipairs(element.elements) do
+            collectTextElements(child, output)
+        end
+    end
+    return output
+end
+
+local function upperText(element)
+    return string.upper(tostring(element ~= nil and element.text or ""))
+end
+
+local function normalizeOverviewText(value)
+    value = tostring(value or "")
+    value = value:gsub("^%s+", ""):gsub("%s+$", "")
+    return string.upper(value)
+end
+
+-- Resolve the husbandry from what the player actually sees in the animals
+-- overview.  FS25 does not expose the currently displayed husbandry through a
+-- stable field in every 1.23 UI path, but the selected husbandry name is always
+-- visible in this frame (e.g. KUHSTALL / KUHWEIDE).
+findDisplayedOverviewHusbandry = function(frame)
+    if frame == nil then return nil end
+    local visibleTexts = collectTextElements(frame, {}) or {}
+    local byName = {}
+    for _, element in ipairs(visibleTexts) do
+        if element.getIsVisible == nil or element:getIsVisible() then
+            local text = normalizeOverviewText(element.text)
+            if text ~= "" then byName[text] = true end
+        end
+    end
+
+    for _, husbandry in ipairs(getHusbandries()) do
+        local name = normalizeOverviewText(getName(husbandry))
+        if name ~= "" and byName[name] then
+            return husbandry
+        end
+    end
+    return nil
+end
+
+findAgeLabel = function(frame)
+    for _, element in ipairs(collectTextElements(frame, {}) or {}) do
+        local text = upperText(element)
+        if text == "ALTER" or text == "ALTER:" or text == "AGE" or text == "AGE:" then
+            return element
+        end
+    end
+    return nil
+end
+
+local function findAgeValue(frame, ageLabel)
+    if frame == nil or ageLabel == nil then return nil end
+    local best, bestScore
+    local ay = (ageLabel.absPosition ~= nil and ageLabel.absPosition[2] or ageLabel.position[2])
+    local ax = (ageLabel.absPosition ~= nil and ageLabel.absPosition[1] or ageLabel.position[1])
+    for _, element in ipairs(collectTextElements(frame, {}) or {}) do
+        if element ~= ageLabel and element.absPosition ~= nil and ageLabel.absPosition ~= nil then
+            local dy = math.abs((element.absPosition[2] or 0) - ay)
+            local dx = (element.absPosition[1] or 0) - ax
+            if dx > 0 and dy < 0.02 then
+                local score = dx + dy * 10
+                if bestScore == nil or score < bestScore then
+                    best = element
+                    bestScore = score
+                end
+            end
+        end
+    end
+    return best
+end
+
+findCenterTitle = function(frame)
+    if frame == nil then return nil end
+
+    local ageLabel = findAgeLabel(frame)
+    local ageX, ageY
+    if ageLabel ~= nil then
+        local pos = ageLabel.absPosition or ageLabel.position or {0, 0}
+        ageX, ageY = pos[1] or 0, pos[2] or 0
+    end
+
+    local best, bestScore
+    for _, element in ipairs(collectTextElements(frame, {}) or {}) do
+        local text = upperText(element)
+        if text ~= "" and not string.find(text, "STALL%-INFORMATION")
+                and not string.find(text, "HUSBANDRY INFORMATION", 1, true)
+                and text ~= "ALTER" and text ~= "ALTER:" and text ~= "AGE" and text ~= "AGE:"
+                and text ~= "TIERE" and text ~= "ANIMALS" then
+            local pos = element.absPosition or element.position or {0, 0}
+            local size = element.absSize or element.size or {0, 0}
+            local x, y = pos[1] or 0, pos[2] or 0
+            local w, h = size[1] or 0, size[2] or 0
+            local centerX = x + w * 0.5
+
+            -- The breed title is the large centered text directly above the AGE row.
+            -- Do not depend on a particular screen resolution or on negative GUI coordinates.
+            local isMiddle = centerX > 0.30 and centerX < 0.60 and w > 0.08
+            local aboveAge = ageLabel == nil or (y > ageY and y - ageY < 0.30)
+            if isMiddle and aboveAge then
+                local vertical = ageLabel ~= nil and math.abs((y - ageY) - 0.08) or 0
+                local horizontal = ageLabel ~= nil and math.abs(centerX - (ageX + 0.10)) or math.abs(centerX - 0.44)
+                local score = vertical * 4 + horizontal - w * 0.2 - h * 0.5
+                if bestScore == nil or score < bestScore then
+                    best = element
+                    bestScore = score
+                end
+            end
+        end
+    end
+    return best
+end
+
+function Veterinarian:getMilkProducingCount(husbandry)
+    husbandry = resolvePlaceable(husbandry)
+    if husbandry == nil then return 0 end
+    local state = self.states[getKey(husbandry)]
+    local extra = state ~= nil and VeterinarianLife.ensure(state) or nil
+    if extra == nil or extra.lactation == nil then return 0 end
+    local count = 0
+    local totalAnimals = husbandry.getNumOfAnimals ~= nil and math.max(0, husbandry:getNumOfAnimals() or 0) or 0
+    for index = 1, totalAnimals do
+        if math.max(0, extra.lactation[index] or 0) > 0 then count = count + 1 end
+    end
+    return count
+end
+
+function Veterinarian:getOverviewStatusLine(husbandry)
+    husbandry = resolvePlaceable(husbandry)
+    local state = husbandry ~= nil and self.states[getKey(husbandry)] or nil
+    if state ~= nil and state.sick > 0 then
+        return string.format(g_i18n:getText("vet_centerStatusSick"), state.sick, DISEASES[state.disease] or DISEASES[1]), {0.95, 0.08, 0.08, 1}
+    end
+    return g_i18n:getText("vet_centerStatusHealthy"), {0.45, 0.8, 0.05, 1}
+end
+
+function Veterinarian:updateAnimalsOverviewCenterInfo(frame, husbandry)
+    if frame == nil then return end
+    husbandry = resolvePlaceable(husbandry) or findDisplayedOverviewHusbandry(frame)
+    if husbandry ~= nil then
+        frame.veterinarianCurrentHusbandry = husbandry
+    end
 end
 
 function Veterinarian:updateAnimalsOverviewStatus(frame, husbandry)
@@ -403,6 +707,7 @@ function Veterinarian:updateAnimalsOverviewStatus(frame, husbandry)
         self:setStatusColor(status, 0.45, 0.8, 0.05, 1)
     end
     status:setVisible(true)
+    self:updateAnimalsOverviewCenterInfo(frame, husbandry)
 end
 
 function Veterinarian:installAnimalScreenHook()

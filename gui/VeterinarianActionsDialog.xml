@@ -48,10 +48,11 @@
       <Bitmap profile="va_renameButtonArrow" name="actionChevron" visible="false" />
     </Button>
     <Bitmap profile="va_footerLine" name="vetTexture_white" />
-    <Button profile="va_back" onClick="onClickBack">
-      <Bitmap profile="va_escBg" name="vetTexture_actionKey" />
-      <Text profile="va_esc" text="ESC" />
-      <Text profile="va_backText" text="$l10n_button_back" />
+    <Button profile="va_back" id="backButton" onClick="onClickBack">
+      <Bitmap profile="va_backHover" name="backHoverBg" visible="false" />
+      <Bitmap profile="va_escBg" name="backKeyBg" />
+      <Text profile="va_esc" name="backKeyText" text="ESC" />
+      <Text profile="va_backText" name="backLabelText" text="$l10n_button_back" />
     </Button>
   </GuiElement>
   <GUIProfiles>
@@ -425,6 +426,13 @@
       <iconPressedColor value="0 0 0 0" />
       <imageDisabledColor value="0 0 0 0" />
       <iconDisabledColor value="0 0 0 0" />
+    </Profile>
+    <Profile name="va_backHover" extends="baseReference">
+      <size value="136px 35.2px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0.67 0.86 0.12 1" />
     </Profile>
     <Profile name="va_escBg" extends="baseReference">
       <size value="48px 35.2px" />
