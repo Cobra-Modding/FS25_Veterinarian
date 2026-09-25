@@ -1,404 +1,129 @@
 <?xml version='1.0' encoding='utf-8'?>
 <modDesc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" descVersion="111" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/modDesc.xsd">
-  <author>Marcus / Codex</author>
-  <version>1.0.3.5</version>
-  <title>
-    <de>Tierarzt &amp; Tierkrankheiten</de>
-    <en>Veterinarian &amp; Animal Diseases</en>
-  </title>
-  <description>
-    <de>Tiere können zufällig erkranken. Rufe in der Nähe eines eigenen Stalls den Tierarzt, um kranke Tiere behandeln zu lassen.</de>
-    <en>Animals may become ill. Call the veterinarian near one of your husbandries to treat sick animals.</en>
-  </description>
-  <iconFilename>icon_Veterinarian.dds</iconFilename>
-  <multiplayer supported="true" />
-  <actions>
-    <action name="VET_INSEMINATE" axisType="HALF" />
-  </actions>
-  <inputBinding>
-    <actionBinding action="VET_INSEMINATE">
-      <binding device="KB_MOUSE_DEFAULT" input="KEY_i" axisComponent="+" neutralInput="0" index="1" />
-    </actionBinding>
-  </inputBinding>
-  <extraSourceFiles>
-    <sourceFile filename="scripts/VeterinarianLife.lua" />
-    <sourceFile filename="scripts/VeterinarianVaccineEvent.lua" />
-    <sourceFile filename="scripts/VeterinarianRenameEvent.lua" />
-    <sourceFile filename="scripts/VeterinarianStateEvent.lua" />
-    <sourceFile filename="scripts/VeterinarianResultEvent.lua" />
-    <sourceFile filename="scripts/VeterinarianEvent.lua" />
-    <sourceFile filename="scripts/ArtificialInseminationResultEvent.lua" />
-    <sourceFile filename="scripts/ArtificialInseminationEvent.lua" />
-    <sourceFile filename="scripts/ArtificialInsemination.lua" />
-    <sourceFile filename="scripts/VeterinarianCardTemplates.lua" />
-    <sourceFile filename="scripts/VeterinarianAnimalList.lua" />
-    <sourceFile filename="scripts/VeterinarianActionsDialog.lua" />
-    <sourceFile filename="scripts/Veterinarian.lua" />
-  </extraSourceFiles>
-  <l10n>
-    <text name="vet_actionsTitle">
-      <de>TIERAKTIONEN</de>
-      <en>ANIMAL ACTIONS</en>
-    </text>
-    <text name="vet_actionsHint">
-      <de>Aktion auswählen</de>
-      <en>Select an action</en>
-    </text>
-    <text name="vet_breedAge">
-      <de>%s · %s Monate</de>
-      <en>%s · %s months</en>
-    </text>
-    <text name="vet_maturity">
-      <de>Geschlechtsreif: %s</de>
-      <en>Sexually mature: %s</en>
-    </text>
-    <text name="vet_yes">
-      <de>Ja</de>
-      <en>Yes</en>
-    </text>
-    <text name="vet_no">
-      <de>Nein</de>
-      <en>No</en>
-    </text>
-    <text name="vet_unknown">
-      <de>Unbekannt</de>
-      <en>Unknown</en>
-    </text>
-    <text name="vet_waterBuffalo">
-      <de>Wasserbüffel</de>
-      <en>Water buffalo</en>
-    </text>
-    <text name="vet_rename">
-      <de>Namen ändern</de>
-      <en>Change names</en>
-    </text>
-    <text name="vet_renameDone">
-      <de>Fertig</de>
-      <en>Done</en>
-    </text>
-    <text name="vet_renameHint">
-      <de>Tier anklicken, um seinen Namen zu ändern.</de>
-      <en>Select an animal to change its name.</en>
-    </text>
-    <text name="vet_renameTitle">
-      <de>Tiername ändern</de>
-      <en>Change animal name</en>
-    </text>
-    <text name="input_VET_INSEMINATE">
-      <de>Künstliche Befruchtung</de>
-      <en>Artificial insemination</en>
-    </text>
-    <text name="vet_inseminationButton">
-      <de>Künstliche Befruchtung</de>
-      <en>Artificial insemination</en>
-    </text>
-    <text name="vet_inseminationTitle">
-      <de>Tierarzt – Künstliche Befruchtung</de>
-      <en>Veterinarian – Artificial insemination</en>
-    </text>
-    <text name="vet_inseminationConfirm">
-      <de>%d fortpflanzungsfähige(s) Tier(e) künstlich befruchten? Kosten: %s</de>
-      <en>Artificially inseminate %d eligible animal(s)? Cost: %s</en>
-    </text>
-    <text name="vet_inseminationConfirmSingle">
-      <de>%s künstlich befruchten? Kosten: %s</de>
-      <en>Artificially inseminate %s? Cost: %s</en>
-    </text>
-    <text name="vet_inseminationListTitle">
-      <de>Befruchtung – %s</de>
-      <en>Insemination – %s</en>
-    </text>
-    <text name="vet_inseminationListHint">
-      <de>Ein fortpflanzungsfähiges Tier einzeln auswählen.</de>
-      <en>Select one eligible animal.</en>
-    </text>
-    <text name="vet_inseminationReady">
-      <de>BEREIT FÜR KÜNSTLICHE BEFRUCHTUNG</de>
-      <en>READY FOR ARTIFICIAL INSEMINATION</en>
-    </text>
-    <text name="vet_inseminationRunning">
-      <de>BEFRUCHTET – RESTLICHE TRAGEZEIT: %d MONATE</de>
-      <en>INSEMINATED – GESTATION REMAINING: %d MONTHS</en>
-    </text>
-    <text name="vet_inseminationRemaining">
-      <de>BEFRUCHTET – RESTLICHE TRAGEZEIT: %d MONATE</de>
-      <en>INSEMINATED – GESTATION REMAINING: %d MONTHS</en>
-    </text>
-    <text name="vet_inseminationRemainingOne">
-      <de>BEFRUCHTET – RESTLICHE TRAGEZEIT: 1 MONAT</de>
-      <en>INSEMINATED – GESTATION REMAINING: 1 MONTH</en>
-    </text>
-    <text name="vet_inseminationBirthWaiting">
-      <de>BEFRUCHTET – GEBURT WARTET AUF FREIEN STALLPLATZ</de>
-      <en>INSEMINATED – BIRTH WAITING FOR A FREE HUSBANDRY SLOT</en>
-    </text>
-    <text name="vet_inseminationNotEligible">
-      <de>NICHT FORTPFLANZUNGSFÄHIG</de>
-      <en>NOT ELIGIBLE FOR REPRODUCTION</en>
-    </text>
-    <text name="vet_inseminationSuccess">
-      <de>Künstliche Befruchtung bei %d Tier(en) eingeleitet. Kosten: %s</de>
-      <en>Artificial insemination started for %d animal(s). Cost: %s</en>
-    </text>
-    <text name="vet_inseminationNoEligible">
-      <de>Keine fortpflanzungsfähigen Tiere verfügbar oder Befruchtung läuft bereits.</de>
-      <en>No eligible animals available, or insemination is already in progress.</en>
-    </text>
-    <text name="vet_inseminationNoMoney">
-      <de>Die künstliche Befruchtung kostet %s. Der Betrieb hat nicht genug Geld.</de>
-      <en>Artificial insemination costs %s. The farm does not have enough money.</en>
-    </text>
-    <text name="vet_inseminationStableFull">
-      <de>Der Stall ist voll. Eine Befruchtung kann nicht eingeleitet werden.</de>
-      <en>The husbandry is full. Insemination cannot be started.</en>
-    </text>
-    <text name="vet_menuButton">
-      <de>Tierarzt rufen</de>
-      <en>Call veterinarian</en>
-    </text>
-    <text name="vet_animalDialogTitle">
-      <de>Tierarzt – Tiere auswählen</de>
-      <en>Veterinarian – Select animal</en>
-    </text>
-    <text name="vet_animalDialogText">
-      <de>Wähle ein krankes Tier aus, das behandelt werden soll.</de>
-      <en>Select a sick animal to be treated.</en>
-    </text>
-    <text name="vet_listTitle">
-      <de>Tierarzt – %s</de>
-      <en>Veterinarian – %s</en>
-    </text>
-    <text name="vet_listHint">
-      <de>Ein krankes Tier anklicken, um es einzeln zu behandeln.</de>
-      <en>Select an ill animal to treat it individually.</en>
-    </text>
-    <text name="vet_defaultStable">
-      <de>Tierstall</de>
-      <en>Animal husbandry</en>
-    </text>
-    <text name="vet_defaultAnimal">
-      <de>Tier</de>
-      <en>Animal</en>
-    </text>
-    <text name="vet_listAnimalTitle">
-      <de>%s – %s</de>
-      <en>%s – %s</en>
-    </text>
-    <text name="vet_listAnimalWithName">
-      <de>%s – %s</de>
-      <en>%s – %s</en>
-    </text>
-    <text name="vet_listDisease">
-      <de>KRANKHEIT: %s</de>
-      <en>DISEASE: %s</en>
-    </text>
-    <text name="vet_listHealthy">
-      <de>GESUND</de>
-      <en>HEALTHY</en>
-    </text>
-    <text name="vet_animalSick">
-      <de>%s – KRANK (%s) – Behandlung %s</de>
-      <en>%s – SICK (%s) – Treatment %s</en>
-    </text>
-    <text name="vet_animalHealthy">
-      <de>%s – gesund</de>
-      <en>%s – healthy</en>
-    </text>
-    <text name="vet_selectTreatment">
-      <de>Behandeln</de>
-      <en>Treat</en>
-    </text>
-    <text name="vet_nextAnimal">
-      <de>Nächstes Tier</de>
-      <en>Next animal</en>
-    </text>
-    <text name="vet_animalPosition">
-      <de>%s
-
-Tier %d von %d</de>
-      <en>%s
-
-Animal %d of %d</en>
-    </text>
-    <text name="vet_selectedAnimalHealthy">
-      <de>Dieses Tier ist gesund und benötigt keine Behandlung.</de>
-      <en>This animal is healthy and does not need treatment.</en>
-    </text>
-    <text name="vet_statusHealthy">
-      <de>STATUS: Keine kranken Tiere</de>
-      <en>STATUS: No sick animals</en>
-    </text>
-    <text name="vet_statusSick">
-      <de>WARNUNG: %d Tier(e) krank - %s</de>
-      <en>WARNING: %d sick animal(s) - %s</en>
-    </text>
-    <text name="vet_statusNoHusbandry">
-      <de>STATUS: Kein eigener Stall ausgewählt</de>
-      <en>STATUS: No owned husbandry selected</en>
-    </text>
-    <text name="vet_diseaseDetected">
-      <de>%d Tier(e) in „%s“ sind erkrankt (%s). Tierarzt über das Tiermenü rufen.</de>
-      <en>%d animal(s) at “%s” are ill (%s). Call the veterinarian from the animal menu.</en>
-    </text>
-    <text name="vet_treated">
-      <de>Der Tierarzt hat %d Tier(e) behandelt. Kosten: %s</de>
-      <en>The veterinarian treated %d animal(s). Cost: %s</en>
-    </text>
-    <text name="vet_noSickAnimals">
-      <de>Im ausgewählten Stall gibt es keine kranken Tiere.</de>
-      <en>There are no sick animals in the selected husbandry.</en>
-    </text>
-    <text name="vet_noSelectedHusbandry">
-      <de>In diesem Tiermenü ist kein eigener Stall ausgewählt.</de>
-      <en>No owned husbandry is selected in this animal menu.</en>
-    </text>
-    <text name="vet_notEnoughMoney">
-      <de>Die Behandlung kostet %s. Der Betrieb hat nicht genug Geld.</de>
-      <en>Treatment costs %s. The farm does not have enough money.</en>
-    </text>
-    <text name="vet_expectedYoung">
-      <de>Erwartete Junge: %s</de>
-      <en>Expected young: %s</en>
-    </text>
-    <text name="vet_breedingWait">
-      <de>NÄCHSTE BEFRUCHTUNG IN %d MONATEN</de>
-      <en>NEXT INSEMINATION IN %d MONTHS</en>
-    </text>
-    <text name="vet_lactationRemaining">
-      <de>Milch noch %d Monate</de>
-      <en>Milk: %d months left</en>
-    </text>
-    <text name="vet_lactationRemainingOne">
-      <de>Milch noch 1 Monat</de>
-      <en>Milk: 1 month left</en>
-    </text>
-    <text name="vet_birthResult">
-      <de>%s: %d lebende Junge, %d Totgeburten.</de>
-      <en>%s: %d live young, %d stillbirths.</en>
-    </text>
-    <text name="vet_birthAutoSold">
-      <de>Stall voll: %d Jungtier(e) automatisch verkauft. Erlös: %s</de>
-      <en>Barn full: %d newborn animal(s) sold automatically. Revenue: %s</en>
-    </text>
-    <text name="vet_animalDied">
-      <de>%s ist an einer unbehandelten Krankheit gestorben.</de>
-      <en>%s died of an untreated illness.</en>
-    </text>
-    <text name="vet_vaccineMode">
-      <de>Impfen</de>
-      <en>Vaccinate</en>
-    </text>
-    <text name="vet_treatmentMode">
-      <de>Behandeln</de>
-      <en>Treat</en>
-    </text>
-    <text name="vet_vaccineTitle">
-      <de>Impfungen – %s</de>
-      <en>Vaccinations – %s</en>
-    </text>
-    <text name="vet_vaccineHint">
-      <de>Gesundes Tier auswählen, um es impfen zu lassen.</de>
-      <en>Select a healthy animal to vaccinate.</en>
-    </text>
-    <text name="vet_vaccineTreatFirst">
-      <de>ZUERST KRANKHEIT BEHANDELN</de>
-      <en>TREAT ILLNESS FIRST</en>
-    </text>
-    <text name="vet_vaccineActive">
-      <de>IMPFSCHUTZ: NOCH %d MONATE</de>
-      <en>VACCINATION: %d MONTHS REMAINING</en>
-    </text>
-    <text name="vet_vaccineReady">
-      <de>BEREIT ZUR IMPFUNG</de>
-      <en>READY FOR VACCINATION</en>
-    </text>
-    <text name="vet_vaccineEffect">
-      <de>12 Monate Schutz · 90 % weniger Erkrankungsrisiko</de>
-      <en>12 months of protection · 90% lower illness risk</en>
-    </text>
-    <text name="vet_vaccineConfirm">
-      <de>%s für %s impfen? Schutzdauer: 12 Monate.</de>
-      <en>Vaccinate %s for %s? Protection: 12 months.</en>
-    </text>
-    <text name="vet_treatmentDeadline">
-      <de>Behandlung innerhalb von %d Spielstunden!</de>
-      <en>Treat within %d game hours!</en>
-    </text>
-    <text name="vet_cardHealthy">
-      <de>Gesund</de>
-      <en>Healthy</en>
-    </text>
-    <text name="vet_cardSick">
-      <de>Krank</de>
-      <en>Sick</en>
-    </text>
-    <text name="vet_cardVaccinated">
-      <de>Geimpft:</de>
-      <en>Vaccinated:</en>
-    </text>
-    <text name="vet_cardFertilized">
-      <de>Befruchtet:</de>
-      <en>Inseminated:</en>
-    </text>
-    <text name="vet_cardMilkProduction">
-      <de>Milchproduktion</de>
-      <en>Milk production</en>
-    </text>
-    <text name="vet_cardYoung">
-      <de>Erwartete Jungen:</de>
-      <en>Expected young:</en>
-    </text>
-    <text name="vet_cardBirthIn">
-      <de>Geburt in:</de>
-      <en>Birth in:</en>
-    </text>
-    <text name="vet_cardBirthMonths">
-      <de>%d Monate</de>
-      <en>%d months</en>
-    </text>
-    <text name="vet_cardBirthOneMonth">
-      <de>1 Monat</de>
-      <en>1 month</en>
-    </text>
-    <text name="vet_cardBirthNow">
-      <de>jetzt</de>
-      <en>now</en>
-    </text>
-    <text name="vet_cardHint">
-      <de>Tier anklicken → Tierarzt rufen</de>
-      <en>Click animal → Call veterinarian</en>
-    </text>
-    <text name="vet_stockHeading">
-      <de>Tierliste im Stall</de>
-      <en>Animals in the stable</en>
-    </text>
-    <text name="vet_boardHeading">
-      <de>Tierarzt-Untermenü</de>
-      <en>Veterinarian menu</en>
-    </text>
-    <text name="vet_treatAction">
-      <de>Behandeln</de>
-      <en>Treat</en>
-    </text>
-    <text name="vet_treatConfirm">
-      <de>%s behandeln lassen? Kosten: %s</de>
-      <en>Treat %s? Cost: %s</en>
-    </text>
-      <text name="vet_centerStatusLabel">
-      <de>Status:</de>
-      <en>Status:</en>
-    </text>
-    <text name="vet_centerStatusHealthy">
-      <de>Keine kranken Tiere</de>
-      <en>No sick animals</en>
-    </text>
-    <text name="vet_centerStatusSick">
-      <de>%d Tier(e) erkrankt an %s</de>
-      <en>%d animal(s) ill with %s</en>
-    </text>
-    <text name="vet_centerMilkLabel">
-      <de>Milchgebende Tiere:</de>
-      <en>Milk-producing animals:</en>
-    </text>
-</l10n>
+	<author>Marcus (Cobra Modding)</author>
+	<version>0.9.0.0 Beta</version>
+  
+	<title>
+		<de>Tierarzt und Tierkrankheiten</de>
+		<en>Veterinarian and Animal Diseases</en>
+	</title>
+  
+	<description>
+		<de>Tierarztaktionen im Tiermenü eigener Ställe: Tiere behandeln, impfen, benennen und künstlich befruchten. Unbehandelte Krankheiten können nach 72 Spielstunden tödlich enden. Impfungen schützen 12 Monate und senken das Erkrankungsrisiko um 90 %. Bei unterstützten Säugetieren ersetzt künstliche Befruchtung die natürliche Fortpflanzung. Geflügel und die eigene Hirsch-Fortpflanzung der Hof Bergmann bleiben unverändert; bereits laufende natürliche Trächtigkeiten können auslaufen. Normale Milchproduktion läuft nach einer Geburt 12 Monate. Die besondere Milchkuh-, Ziegenpaletten- und Bullenproduktion der Hof Bergmann bleibt mapgesteuert. Bestehende und gekaufte Tiere ohne gespeicherten Laktationsstatus müssen zunächst Nachwuchs bekommen. Bei vollem Stall werden überschüssige Neugeborene automatisch verkauft. An die mitgelieferte Hof-Bergmann-Version angepasst, einschließlich Schurzustand, Stallfiltern und männlichen Kälbern. Weitere Mods, die Tiercluster, Fortpflanzung oder Milchproduktion ersetzen, sind nicht geprüft.</de>
+		<en>Veterinary actions in the animal menu of your own husbandries: treat, vaccinate, name and artificially inseminate animals. Untreated diseases can be fatal after 72 game hours. Vaccinations last 12 months and reduce illness risk by 90%. Artificial insemination replaces natural reproduction in supported mammals. Poultry and Hof Bergmann deer retain native reproduction; existing natural pregnancies may finish. Regular milk production lasts 12 months after birth. Hof Bergmann special milk cows, goat milk pallets and bull production remain map-controlled. Existing and purchased animals without a saved lactation state must give birth first. Excess newborns are automatically sold when the barn is full. Adapted to the supplied Hof Bergmann version, including shearing state, husbandry filters and male calves. Other mods replacing animal clusters, reproduction or milk production have not been tested.</en>
+	</description>
+  
+	<iconFilename>icon_Veterinarian.dds</iconFilename>
+  
+	<multiplayer supported="true" />
+  
+	<actions>
+		<action name="VET_INSEMINATE" axisType="HALF" />
+	</actions>
+  
+	<inputBinding>
+		<actionBinding action="VET_INSEMINATE">
+		<binding device="KB_MOUSE_DEFAULT" input="KEY_i" axisComponent="+" neutralInput="0" index="1" />
+		</actionBinding>
+	</inputBinding>
+  
+	<extraSourceFiles>
+        <sourceFile filename="scripts/VeterinarianAnimalProfile.lua" />
+		<sourceFile filename="scripts/VeterinarianLife.lua" />
+		<sourceFile filename="scripts/VeterinarianIdentity.lua" />
+		<sourceFile filename="scripts/VeterinarianSyncEvent.lua" />
+		<sourceFile filename="scripts/VeterinarianNotificationEvent.lua" />
+		<sourceFile filename="scripts/VeterinarianVaccineEvent.lua" />
+		<sourceFile filename="scripts/VeterinarianRenameEvent.lua" />
+		<sourceFile filename="scripts/VeterinarianStateEvent.lua" />
+		<sourceFile filename="scripts/VeterinarianResultEvent.lua" />
+		<sourceFile filename="scripts/VeterinarianEvent.lua" />
+		<sourceFile filename="scripts/ArtificialInseminationResultEvent.lua" />
+		<sourceFile filename="scripts/ArtificialInseminationEvent.lua" />
+		<sourceFile filename="scripts/ArtificialInsemination.lua" />
+		<sourceFile filename="scripts/VeterinarianCardTemplates.lua" />
+		<sourceFile filename="scripts/VeterinarianAnimalList.lua" />
+		<sourceFile filename="scripts/VeterinarianActionsDialog.lua" />
+		<sourceFile filename="scripts/Veterinarian.lua" />
+	</extraSourceFiles>
+  
+	<l10n>
+        <text name="vet_cardSemenProduction"><de>Spermaproduktion</de><en>Semen production</en></text>
+		<text name="vet_actionsTitle"><de>TIERAKTIONEN</de><en>ANIMAL ACTIONS</en></text>
+		<text name="vet_actionsHint"><de>Aktion auswählen</de><en>Select an action</en></text>
+		<text name="vet_breedAge"><de>%s · %s Monate</de><en>%s · %s months</en></text>
+		<text name="vet_maturity"><de>Geschlechtsreif: %s</de><en>Sexually mature: %s</en></text>
+		<text name="vet_yes"><de>Ja</de><en>Yes</en></text>
+		<text name="vet_no"><de>Nein</de><en>No</en></text>
+		<text name="vet_unknown"><de>Unbekannt</de><en>Unknown</en></text>
+		<text name="vet_waterBuffalo"><de>Wasserbüffel</de><en>Water buffalo</en></text>
+		<text name="vet_rename"><de>Namen ändern</de><en>Change names</en></text>
+		<text name="vet_renameTitle"><de>Tiername ändern</de><en>Change animal name</en></text>
+		<text name="input_VET_INSEMINATE"><de>Künstliche Befruchtung</de><en>Artificial insemination</en></text>
+		<text name="vet_inseminationButton"><de>Künstliche Befruchtung</de><en>Artificial insemination</en></text>
+		<text name="vet_inseminationTitle"><de>Tierarzt – Künstliche Befruchtung</de><en>Veterinarian – Artificial insemination</en></text>
+		<text name="vet_inseminationConfirmSingle"><de>%s künstlich befruchten? Kosten: %s</de><en>Artificially inseminate %s? Cost: %s</en></text>
+		<text name="vet_inseminationReady"><de>BEREIT FÜR KÜNSTLICHE BEFRUCHTUNG</de><en>READY FOR ARTIFICIAL INSEMINATION</en></text>
+		<text name="vet_inseminationRemaining"><de>BEFRUCHTET – RESTLICHE TRAGEZEIT: %d MONATE</de><en>INSEMINATED – GESTATION REMAINING: %d MONTHS</en></text>
+		<text name="vet_inseminationRemainingOne"><de>BEFRUCHTET – RESTLICHE TRAGEZEIT: 1 MONAT</de><en>INSEMINATED – GESTATION REMAINING: 1 MONTH</en></text>
+		<text name="vet_inseminationBirthWaiting"><de>BEFRUCHTET – GEBURT WARTET AUF FREIEN STALLPLATZ</de><en>INSEMINATED – BIRTH WAITING FOR A FREE HUSBANDRY SLOT</en></text>
+		<text name="vet_inseminationNotEligible"><de>NICHT FORTPFLANZUNGSFÄHIG</de><en>NOT ELIGIBLE FOR REPRODUCTION</en></text>
+		<text name="vet_inseminationSuccess"><de>Künstliche Befruchtung bei %d Tier(en) eingeleitet. Kosten: %s</de><en>Artificial insemination started for %d animal(s). Cost: %s</en></text>
+		<text name="vet_inseminationNoEligible"><de>Keine fortpflanzungsfähigen Tiere verfügbar oder Befruchtung läuft bereits.</de><en>No eligible animals available, or insemination is already in progress.</en></text>
+		<text name="vet_inseminationNoMoney"><de>Die künstliche Befruchtung kostet %s. Der Betrieb hat nicht genug Geld.</de><en>Artificial insemination costs %s. The farm does not have enough money.</en></text>
+		<text name="vet_animalDialogTitle"><de>Tierarzt – Tiere auswählen</de><en>Veterinarian – Select animal</en></text>
+		<text name="vet_defaultStable"><de>Tierstall</de><en>Animal husbandry</en></text>
+		<text name="vet_defaultAnimal"><de>Tier</de><en>Animal</en></text>
+		<text name="vet_listDisease"><de>KRANKHEIT: %s</de><en>DISEASE: %s</en></text>
+		<text name="vet_animalSick"><de>%s – KRANK (%s) – Behandlung %s</de><en>%s – SICK (%s) – Treatment %s</en></text>
+		<text name="vet_animalHealthy"><de>%s – gesund</de><en>%s – healthy</en></text>
+		<text name="vet_selectTreatment"><de>Behandeln</de><en>Treat</en></text>
+		<text name="vet_nextAnimal"><de>Nächstes Tier</de><en>Next animal</en></text>
+		<text name="vet_animalPosition"><de>%s&#10;Tier %d von %d</de><en>%s&#10;Animal %d of %d</en></text>
+		<text name="vet_selectedAnimalHealthy"><de>Dieses Tier ist gesund und benötigt keine Behandlung.</de><en>This animal is healthy and does not need treatment.</en></text>
+		<text name="vet_statusHealthy"><de>STATUS: Keine kranken Tiere</de><en>STATUS: No sick animals</en></text>
+		<text name="vet_statusSick"><de>WARNUNG: %d Tier(e) krank - %s</de><en>WARNING: %d sick animal(s) - %s</en></text>
+		<text name="vet_statusNoHusbandry"><de>STATUS: Kein eigener Stall ausgewählt</de><en>STATUS: No owned husbandry selected</en></text>
+		<text name="vet_diseaseDetected"><de>%d Tier(e) in „%s“ sind erkrankt (%s). Tierarzt über das Tiermenü rufen.</de><en>%d animal(s) at “%s” are ill (%s). Call the veterinarian from the animal menu.</en></text>
+		<text name="vet_treated"><de>Der Tierarzt hat %d Tier(e) behandelt. Kosten: %s</de><en>The veterinarian treated %d animal(s). Cost: %s</en></text>
+		<text name="vet_notEnoughMoney"><de>Die Behandlung kostet %s. Der Betrieb hat nicht genug Geld.</de><en>Treatment costs %s. The farm does not have enough money.</en></text>
+		<text name="vet_expectedYoung"><de>Erwartete Junge: %s</de><en>Expected young: %s</en></text>
+		<text name="vet_breedingWait"><de>NÄCHSTE BEFRUCHTUNG IN %d MONATEN</de><en>NEXT INSEMINATION IN %d MONTHS</en></text>
+		<text name="vet_birthResult"><de>%s: %d lebende Junge, %d Totgeburten.</de><en>%s: %d live young, %d stillbirths.</en></text>
+		<text name="vet_birthAutoSold"><de>Stall voll: %d Jungtier(e) automatisch verkauft. Erlös: %s</de><en>Barn full: %d newborn animal(s) sold automatically. Revenue: %s</en></text>
+		<text name="vet_animalDied"><de>%s ist an einer unbehandelten Krankheit gestorben.</de><en>%s died of an untreated illness.</en></text>
+		<text name="vet_vaccineMode"><de>Impfen</de><en>Vaccinate</en></text>
+		<text name="vet_vaccineTreatFirst"><de>ZUERST KRANKHEIT BEHANDELN</de><en>TREAT ILLNESS FIRST</en></text>
+		<text name="vet_vaccineActive"><de>IMPFSCHUTZ: NOCH %d MONATE</de><en>VACCINATION: %d MONTHS REMAINING</en></text>
+		<text name="vet_vaccineReady"><de>BEREIT ZUR IMPFUNG</de><en>READY FOR VACCINATION</en></text>
+		<text name="vet_vaccineEffect"><de>12 Monate Schutz · 90 % weniger Erkrankungsrisiko</de><en>12 months of protection · 90% lower illness risk</en></text>
+		<text name="vet_vaccineConfirm"><de>%s für %s impfen? Schutzdauer: 12 Monate.</de><en>Vaccinate %s for %s? Protection: 12 months.</en></text>
+		<text name="vet_treatmentDeadline"><de>Behandlung innerhalb von %d Spielstunden!</de><en>Treat within %d game hours!</en></text>
+		<text name="vet_cardHealthy"><de>Gesund</de><en>Healthy</en></text>
+		<text name="vet_cardSick"><de>Krank</de><en>Sick</en></text>
+		<text name="vet_cardVaccinated"><de>Geimpft:</de><en>Vaccinated:</en></text>
+		<text name="vet_cardFertilized"><de>Befruchtet:</de><en>Inseminated:</en></text>
+		<text name="vet_cardMilkProduction"><de>Milchproduktion</de><en>Milk production</en></text>
+		<text name="vet_cardYoung"><de>Erwartete Jungen:</de><en>Expected young:</en></text>
+		<text name="vet_cardBirthIn"><de>Geburt in:</de><en>Birth in:</en></text>
+		<text name="vet_cardBirthMonths"><de>%d Monate</de><en>%d months</en></text>
+		<text name="vet_cardBirthOneMonth"><de>1 Monat</de><en>1 month</en></text>
+		<text name="vet_cardBirthNow"><de>jetzt</de><en>now</en></text>
+		<text name="vet_treatAction"><de>Behandeln</de><en>Treat</en></text>
+		<text name="vet_treatConfirm"><de>%s behandeln lassen? Kosten: %s</de><en>Treat %s? Cost: %s</en></text>
+		<text name="vet_centerStatusLabel"><de>Status:</de><en>Status:</en></text>
+		<text name="vet_centerStatusHealthy"><de>Keine kranken Tiere</de><en>No sick animals</en></text>
+		<text name="vet_centerStatusSick"><de>%d Tier(e) erkrankt an %s</de><en>%d animal(s) ill with %s</en></text>
+		<text name="vet_centerMilkLabel"><de>Milchgebende Tiere:</de><en>Milk-producing animals:</en></text>
+		<text name="vet_diseaseRespiratory"><de>Atemwegsinfekt</de><en>Respiratory infection</en></text>
+		<text name="vet_diseaseDigestive"><de>Magen-Darm-Infekt</de><en>Digestive infection</en></text>
+		<text name="vet_diseaseFever"><de>Fieber</de><en>Fever</en></text>
+		<text name="vet_diseaseHoof"><de>Klauenentzündung</de><en>Hoof inflammation</en></text>
+		<text name="vet_diseaseParasites"><de>Parasitenbefall</de><en>Parasite infestation</en></text>
+		<text name="vet_cardEggProduction"><de>Eierproduktion</de><en>Egg production</en></text>
+		<text name="vet_cardMeatProduction"><de>Fleischproduktion</de><en>Meat production</en></text>
+		<text name="vet_cardWoolProduction"><de>Wollproduktion</de><en>Wool production</en></text>
+		<text name="vet_tooYoung"><de>zu jung</de><en>too young</en></text>
+	</l10n>
+  
 </modDesc>

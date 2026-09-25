@@ -1,0 +1,466 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+  <GuiElement profile="newLayer" />
+  <Bitmap profile="va_backdrop" name="vetTexture_white" />
+  <GuiElement profile="va_panel" id="dialogPanel">
+    <Bitmap profile="va_surface" name="vetTexture_panel" />
+    <Bitmap profile="va_headerIcon" name="vetTexture_vetHeader" />
+    <Text profile="va_title" text="$l10n_vet_actionsTitle" />
+    <Button profile="va_close" onClick="onClickBack" name="vetTexture_actionKey">
+      <Text profile="va_closeText" text="X" />
+    </Button>
+    <Bitmap profile="va_card" id="animalCard" name="vetTexture_card">
+      <Bitmap profile="va_animal" name="animalIcon" />
+      <Text profile="va_animalTitle" name="animalTitle" />
+      <Text profile="va_details" name="detailsText" />
+      <Bitmap profile="va_badge" name="healthBadge" />
+      <Bitmap profile="va_heart" name="healthHeart" />
+      <Text profile="va_health" name="healthText" />
+      <Bitmap profile="va_divider" name="vetTexture_white" />
+      <Text profile="va_vaccineLabel" name="vaccineLabel" />
+      <Text profile="va_vaccineValue" name="vaccineValue" />
+      <Text profile="va_fertilityLabel" name="fertilityLabel" />
+      <Text profile="va_fertilityValue" name="fertilityValue" />
+      <Text profile="va_youngLabel" name="youngLabel" />
+      <Text profile="va_youngValue" name="youngValue" />
+      <Bitmap profile="va_youngDivider" name="youngDivider" visible="false" />
+      <Text profile="va_birthLabel" name="birthLabel" />
+      <Text profile="va_birthValue" name="birthValue" />
+    </Bitmap>
+    <Bitmap profile="va_line" name="vetTexture_white" />
+    <Text profile="va_hint" text="$l10n_vet_actionsHint" />
+    <Button profile="va_inseminationButton" id="inseminationButton" onClick="onInseminate">
+      <Bitmap profile="va_inseminationButtonKey" name="vetTexture_actionKey" />
+      <Bitmap profile="va_inseminationButtonIcon" name="vetTexture_fertility" />
+      <Text profile="va_inseminationButtonLabel" name="label" text="$l10n_vet_inseminationButton" />
+      <Bitmap profile="va_inseminationButtonArrow" name="actionChevron" visible="false" />
+    </Button>
+    <Button profile="va_vaccineButton" id="vaccineButton" onClick="onVaccinate" inputAction="MENU_EXTRA_2">
+      <Bitmap profile="va_vaccineButtonKey" name="vetTexture_actionKey" />
+      <Bitmap profile="va_vaccineButtonIcon" name="vetTexture_syringe" />
+      <Text profile="va_vaccineButtonLabel" name="label" text="$l10n_vet_vaccineMode" />
+      <Bitmap profile="va_vaccineButtonArrow" name="actionChevron" visible="false" />
+    </Button>
+    <Button profile="va_renameButton" id="renameButton" onClick="onRename" inputAction="MENU_EXTRA_1">
+      <Bitmap profile="va_renameButtonKey" name="vetTexture_actionKey" />
+      <Bitmap profile="va_renameButtonIcon" name="vetTexture_pencil" />
+      <Text profile="va_renameButtonLabel" name="label" text="$l10n_vet_rename" />
+      <Bitmap profile="va_renameButtonArrow" name="actionChevron" visible="false" />
+    </Button>
+    <Bitmap profile="va_footerLine" name="vetTexture_white" />
+    <Button profile="va_back" id="backButton" onClick="onClickBack" inputAction="MENU_BACK">
+      <Bitmap profile="va_backHover" name="backHoverBg" visible="false" />
+      <Bitmap profile="va_escBg" name="backKeyBg" />
+      <Text profile="va_esc" name="backKeyText" text="ESC" />
+      <Text profile="va_backText" name="backLabelText" text="$l10n_button_back" />
+    </Button>
+  </GuiElement>
+  <GUIProfiles>
+    <Profile name="va_backdrop" extends="baseReference">
+      <size value="1920px 1080px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0 0 0 0.65" />
+    </Profile>
+    <Profile name="va_panel" extends="baseReference">
+      <size value="584px 600px" />
+      <position value="668px -240px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_surface" extends="baseReference">
+      <size value="584px 600px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_headerIcon" extends="baseReference">
+      <size value="51.2px 51.2px" />
+      <position value="27.2px -20.8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_title" extends="baseReference">
+      <size value="392px 51.2px" />
+      <position value="96px -20.8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="25.6px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_close" extends="baseReference">
+      <size value="38.4px 38.4px" />
+      <position value="524.8px -25.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_closeText" extends="baseReference">
+      <size value="38.4px 38.4px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="22.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="center" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_card" extends="baseReference">
+      <size value="542.4px 168px" />
+      <position value="20.8px -89.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_animal" extends="baseReference">
+      <size value="80px 65.6px" />
+      <position value="14.4px -11.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_animalTitle" extends="baseReference">
+      <size value="264px 27.2px" />
+      <position value="113.6px -16px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="22.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_details" extends="baseReference">
+      <size value="280px 23.2px" />
+      <position value="113.6px -47.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="17.6px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_badge" extends="baseReference">
+      <size value="116.8px 36.8px" />
+      <position value="408px -27.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_heart" extends="baseReference">
+      <size value="20.8px 19.2px" />
+      <position value="418.4px -36px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_health" extends="baseReference">
+      <size value="72px 36.8px" />
+      <position value="448px -27.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="16px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_divider" extends="baseReference">
+      <size value="504px 0.8px" />
+      <position value="19.2px -87.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0.3 0.3 0.27 1" />
+    </Profile>
+    <Profile name="va_vaccineLabel" extends="baseReference">
+      <size value="75.2px 19.2px" />
+      <position value="19.2px -97.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="14.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_vaccineValue" extends="baseReference">
+      <size value="54.4px 19.2px" />
+      <position value="97.6px -97.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="14.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_fertilityLabel" extends="baseReference">
+      <size value="91.2px 19.2px" />
+      <position value="180px -97.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="14.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_fertilityValue" extends="baseReference">
+      <size value="56px 19.2px" />
+      <position value="275.2px -97.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="14.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_youngLabel" extends="baseReference">
+      <size value="128px 19.2px" />
+      <position value="19.2px -120.8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="12.8px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_youngValue" extends="baseReference">
+      <size value="64px 19.2px" />
+      <position value="150.4px -120.8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="12.8px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_youngDivider" extends="baseReference">
+      <size value="504px 0.8px" />
+      <position value="19.2px -119.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0.2 0.2 0.18 1" />
+    </Profile>
+    <Profile name="va_birthLabel" extends="baseReference">
+      <size value="88px 19.2px" />
+      <position value="19.2px -144px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="12.8px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_birthValue" extends="baseReference">
+      <size value="144px 19.2px" />
+      <position value="110.4px -144px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="12.8px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_line" extends="baseReference">
+      <size value="542.4px 0.8px" />
+      <position value="20.8px -257.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0.25 0.25 0.23 1" />
+    </Profile>
+    <Profile name="va_hint" extends="baseReference">
+      <size value="542.4px 27.2px" />
+      <position value="20.8px -272px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="17.6px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_inseminationButton" extends="baseReference">
+      <size value="529.6px 62.4px" />
+      <position value="27.2px -310.4px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <drawChildrenLast value="true" />
+    </Profile>
+    <Profile name="va_inseminationButtonKey" extends="baseReference">
+      <size value="51.2px 46.4px" />
+      <position value="11.2px -8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_inseminationButtonIcon" extends="baseReference">
+      <size value="28.8px 25.6px" />
+      <position value="22.4px -18.4px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_inseminationButtonLabel" extends="baseReference">
+      <size value="404px 62.4px" />
+      <position value="84.8px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="18.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_inseminationButtonArrow" extends="baseReference">
+      <size value="11.2px 19.2px" />
+      <position value="498.4px -21.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_vaccineButton" extends="baseReference">
+      <size value="529.6px 62.4px" />
+      <position value="27.2px -382.4px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <drawChildrenLast value="true" />
+    </Profile>
+    <Profile name="va_vaccineButtonKey" extends="baseReference">
+      <size value="51.2px 46.4px" />
+      <position value="11.2px -8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_vaccineButtonIcon" extends="baseReference">
+      <size value="28.8px 25.6px" />
+      <position value="22.4px -18.4px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_vaccineButtonLabel" extends="baseReference">
+      <size value="404px 62.4px" />
+      <position value="84.8px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="18.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_vaccineButtonArrow" extends="baseReference">
+      <size value="11.2px 19.2px" />
+      <position value="498.4px -21.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_renameButton" extends="baseReference">
+      <size value="529.6px 62.4px" />
+      <position value="27.2px -454.4px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <drawChildrenLast value="true" />
+    </Profile>
+    <Profile name="va_renameButtonKey" extends="baseReference">
+      <size value="51.2px 46.4px" />
+      <position value="11.2px -8px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_renameButtonIcon" extends="baseReference">
+      <size value="28.8px 25.6px" />
+      <position value="22.4px -18.4px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_renameButtonLabel" extends="baseReference">
+      <size value="404px 62.4px" />
+      <position value="84.8px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="18.4px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+      <textBold value="true" />
+    </Profile>
+    <Profile name="va_renameButtonArrow" extends="baseReference">
+      <size value="11.2px 19.2px" />
+      <position value="498.4px -21.6px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_footerLine" extends="baseReference">
+      <size value="542.4px 0.8px" />
+      <position value="20.8px -535.2px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0.25 0.25 0.23 1" />
+    </Profile>
+    <Profile name="va_back" extends="baseReference">
+      <size value="136px 35.2px" />
+      <position value="427.2px -548px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <drawChildrenLast value="true" />
+      <imageColor value="0 0 0 0" />
+      <iconColor value="0 0 0 0" />
+      <imageFocusedColor value="0 0 0 0" />
+      <iconFocusedColor value="0 0 0 0" />
+      <imageHighlightedColor value="0 0 0 0" />
+      <iconHighlightedColor value="0 0 0 0" />
+      <imageSelectedColor value="0 0 0 0" />
+      <iconSelectedColor value="0 0 0 0" />
+      <imagePressedColor value="0 0 0 0" />
+      <iconPressedColor value="0 0 0 0" />
+      <imageDisabledColor value="0 0 0 0" />
+      <iconDisabledColor value="0 0 0 0" />
+    </Profile>
+    <Profile name="va_backHover" extends="baseReference">
+      <size value="136px 35.2px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <imageColor value="0.67 0.86 0.12 1" />
+    </Profile>
+    <Profile name="va_escBg" extends="baseReference">
+      <size value="48px 35.2px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+    </Profile>
+    <Profile name="va_esc" extends="baseReference">
+      <size value="48px 35.2px" />
+      <position value="0px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="14.4px" />
+      <textColor value="0.67 0.86 0.12 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="center" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+    <Profile name="va_backText" extends="baseReference">
+      <size value="73.6px 35.2px" />
+      <position value="62.4px 0px" />
+      <anchors value="0 0 1 1" />
+      <pivot value="0 1" />
+      <textSize value="16px" />
+      <textColor value="0.94 0.94 0.93 1" />
+      <textVerticalAlignment value="middle" />
+      <textAlignment value="left" />
+      <textLayoutMode value="truncate" />
+    </Profile>
+  </GUIProfiles>
+</GUI>
