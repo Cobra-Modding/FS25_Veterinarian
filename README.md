@@ -35,7 +35,7 @@ Tierarzt / Behandlung
 
 Impfungen
 - Tiere können einzeln geimpft werden.
-- Kranke Tiere müssen erst Behandelt werden, dann können sie erst geimpft werden.
+- Kranke Tiere müssen erst Behandelt werden, dann können sie geimpft werden.
 - Impfkosten:
   - 350 € Tierarzt-Grundgebühr
   - 50 € Impfung
@@ -326,3 +326,5 @@ Kostenübersicht
   - 350 € Anfahrt
   - 250 € Befruchtung
 - Die Grundgebühr wird im Code bei jeder einzelnen dieser Aktionen erneut berechnet.
+
+      !!! Hof Bergmann ready !!!
