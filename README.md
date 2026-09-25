@@ -51,24 +51,6 @@ Impfungen
 
 Tiernamen
 - Tiere erhalten individuelle Namen.
-- Neue Namen werden automatisch aus einer Liste vergeben, beispielsweise:
-  - Bella
-  - Luna
-  - Lotte
-  - Emma
-  - Frieda
-  - Alma
-  - Rosa
-  - Daisy
-  - Molly
-  - Nala
-  - Heidi
-  - Greta
-  - Charlie
-  - Willi
-  - Max
-  - Felix
-  - Oskar
 - Tiere können im Tiermenü manuell umbenannt werden.
 - Eigene Tiernamen dürfen bis zu 96 Zeichen lang sein.
 - Namen werden im Spielstand gespeichert.
